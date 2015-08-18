@@ -11,7 +11,7 @@
 
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Fbo.h"
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/Cocoa/CinderCocoa.h"
 #include "cinder/Utilities.h"
 #include "DeckLinkAPI.h"

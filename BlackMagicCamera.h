@@ -10,7 +10,7 @@
 #define Lichtmaler_BlackMagicCamera_h
 
 #include <vector>
-#include "cinder/app/AppBasic.h"
+#include "cinder/app/App.h"
 #include "cinder/Surface.h"
 #include "cinder/CinderMath.h"
 #include "cinder/Cocoa/CinderCocoa.h"
@@ -38,7 +38,7 @@ typedef struct {
 	string	vitcF1UserBits;
 	string	vitcF2Timecode;
 	string	vitcF2UserBits;
-	
+
 	// RP188 timecodes and user bits (VITC1, VITC2 and LTC)
 	string	rp188vitc1Timecode;
 	string	rp188vitc1UserBits;
@@ -58,9 +58,9 @@ public:
     bool            startCapture();
     void            stopCapture();
     bool            newFrameAvailable();            //returns true id a new frame is available
-    Surface         getFrame();
-    Surface32f      getFrame32();
-    
+    SurfaceRef      getFrame();
+    Surface32fRef   getFrame32();
+
     int             getWidth(){
         return mWidth;
     };
@@ -70,50 +70,50 @@ public:
     uint            get3DLutTextureID();
     //
 	// IDeckLinkInputCallback interface
-	
+
 	// IUnknown needs only a dummy implementation
 	virtual HRESULT		QueryInterface (REFIID iid, LPVOID *ppv)	{return E_NOINTERFACE;}
 	virtual ULONG		AddRef ()									{return 1;}
 	virtual ULONG		Release ()									{return 1;}
     virtual HRESULT		VideoInputFormatChanged (/* in */ BMDVideoInputFormatChangedEvents notificationEvents, /* in */ IDeckLinkDisplayMode *newDisplayMode, /* in */ BMDDetectedVideoInputFormatFlags detectedSignalFlags);
-	virtual HRESULT		VideoInputFrameArrived (/* in */ IDeckLinkVideoInputFrame* videoFrame, /* in */ IDeckLinkAudioInputPacket* audioPacket);	
+	virtual HRESULT		VideoInputFrameArrived (/* in */ IDeckLinkVideoInputFrame* videoFrame, /* in */ IDeckLinkAudioInputPacket* audioPacket);
 
     InputModes                      mInputMode;
 
     // FRAME ANALYSIS
-    Vec2f                           mPixelCenter;
+    vec2                           mPixelCenter;
     int                             mPixelCount;
-    
+
     // MUTEX
     mutex                         mFrameBufferMutex;
-    
+
 private:
     float                           mPixelThreshold;
     bool                            mIsHD;
     int                             mWidth;
     int                             mHeight;
-    vector<Surface8u>               mSurfaceBuffer;               //the surface with the frame
-    vector<Surface32f>              mSurface32Buffer;               //the surface with the frame
+    vector<Surface8uRef>               mSurfaceBuffer;               //the surface with the frame
+    vector<Surface32fRef>              mSurface32Buffer;               //the surface with the frame
     std::vector<IDeckLink*>         deviceList;
 	IDeckLink*                      selectedDevice;
 	IDeckLinkInput*                 deckLinkInput;
 //    IDeckLinkOutput*                deckLinkOutput;
-    
+
     //IDeckLinkMutableVideoFrame *    m_rgbFrame;
     //IDeckLinkOutput *               m_deckLinkOutput;
-	
+
 	IDeckLinkScreenPreviewCallback*	screenPreviewCallback;
 	std::vector<IDeckLinkDisplayMode*>	modeList;
-	
+
 	bool                            supportFormatDetection;
 	bool                            currentlyCapturing;
     int                             mCurrentDeviceIndex;
-    
-    inline Vec3i                    fromYUVToRGB(Byte y, Byte cr, Byte cb);
-    inline Vec3f                    fromYUV10ToRGB(uint32 cy, uint32 ccr, uint32 ccb);
-    inline Vec3f                    fromYUVToRGB(float y, float cr, float cb);
+
+    inline ivec3                    fromYUVToRGB(Byte y, Byte cr, Byte cb);
+    inline vec3                    fromYUV10ToRGB(uint32_t cy, uint32_t ccr, uint32_t ccb);
+    inline vec3                    fromYUVToRGB(float y, float cr, float cb);
     void                            getAncillaryDataFromFrame(IDeckLinkVideoInputFrame* videoFrame, BMDTimecodeFormat timecodeFormat, string* timecodeString, string* userBitsString);
-    
+
 };
 
 #endif
